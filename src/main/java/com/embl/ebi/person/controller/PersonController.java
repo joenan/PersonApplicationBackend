@@ -40,24 +40,25 @@ public class PersonController {
 
     @ApiOperation(value = "Get Person by Id")
     @GetMapping("/person/{id}")
-    public ResponseEntity<Person> findPersonsById(@PathVariable long id) {
+    public ResponseEntity<Person> findPersonsById(@PathVariable("id") Long id) {
         return service.findPersonById(id).map(record -> ResponseEntity.ok().body(record))
-            .orElseThrow(() -> new PersonNotFoundException(id));
+            .orElseThrow(() -> new PersonNotFoundException("User Searched Not Found", id));
     }
+
 
     @ApiOperation(value = "Delete Person by Id")
     @DeleteMapping("/person/{id}")
-    public ResponseEntity<?> deletePersonCode(@PathVariable("id") long id) {
+    public ResponseEntity<?> deletePersonCode(@PathVariable("id") Long id) {
         return service.findPersonById(id)
                 .map(record -> {
                     service.deletePersonById(id);
                     return ResponseEntity.ok().build();
-                }) .orElseThrow(() -> new PersonNotFoundException(id));
+                }) .orElseThrow(() -> new PersonNotFoundException("User To Delete Not Found", id));
     }
 
     @ApiOperation(value = "Edit Person by ID")
     @PutMapping("/person/{id}")
-    public ResponseEntity<?> updatePerson(@PathVariable("id") long id, @RequestBody Person data) {
+    public ResponseEntity<?> updatePerson(@PathVariable("id") Long id, @RequestBody Person data) {
         return service.findPersonById(id)
                 .map(record -> {
                     record.setAge(data.getAge());

@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Arrays;
@@ -18,6 +19,8 @@ public class PersonControllerIntegrationTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    HttpHeaders headers = new HttpHeaders();
 
     @Test
     public void contextLoads() {
@@ -32,53 +35,60 @@ public class PersonControllerIntegrationTest {
         p.setAge("34");
         p.setHobby(Arrays.asList("Reading", "Writing", "Football"));
 
-        ResponseEntity<Person> postResponse = restTemplate.postForEntity("/person", p, Person.class);
-        Assertions.assertNotNull(postResponse);
-        Assertions.assertNotNull(postResponse.getBody());
+
+        HttpEntity<Person> entity = new HttpEntity<>(p, headers);
+
+        ResponseEntity<Person> response = restTemplate.exchange("/person", HttpMethod.POST, entity, Person.class);
+        Assertions.assertNotNull(response.getBody().getId());
+        Assertions.assertEquals("Philip", response.getBody().getLast_name());
+        Assertions.assertEquals("Jones", response.getBody().getFirst_name());
+        Assertions.assertEquals("34", response.getBody().getAge());
     }
 
     @Test
     public void testGetAllPersons() {
-        HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<String>(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange("/person",
-                HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange("/person", HttpMethod.GET, entity, String.class);
         Assertions.assertNotNull(response.getBody());
     }
 
     @Test
+    @Sql("/test.sql")
     public void testGetPersonById() {
+        HttpEntity<Person> entity = new HttpEntity<>(null, headers);
 
-        Person person = restTemplate.getForObject("/person/1", Person.class);
-        System.out.println(person.getFirst_name());
-        Assertions.assertNotNull(person);
+        ResponseEntity<Person> response = restTemplate.exchange("/person/1", HttpMethod.GET, entity, Person.class);
+        Assertions.assertNotNull(response.getBody().getId());
+        Assertions.assertEquals(1L, response.getBody().getId());
+
     }
 
     @Test
     public void testUpdatePerson() {
-        int id = 1;
-        Person p = restTemplate.getForObject("/person/" + id, Person.class);
-        p.setHobby(Arrays.asList("Movies", "Hiking"));
-        p.setAge("90");
-        p.setFirst_name("Barrack");
-        p.setLast_name("Obama");
+        HttpEntity<Person> entity = new HttpEntity<>(null, headers);
+        ResponseEntity<Person> request = restTemplate.exchange("/person/1", HttpMethod.GET, entity, Person.class);
 
-        restTemplate.put("/person/" + id, p);
-        Person updatedPerson = restTemplate.getForObject("/employees/" + id, Person.class);
-        Assertions.assertNotNull(updatedPerson);
+        request.getBody().setFirst_name("Nandom");
+        request.getBody().setLast_name("Gusen");
+
+
+        //Sending to Post API for updating the retrieved entity
+        HttpEntity<Person> updateEntity = new HttpEntity<>(request.getBody(), headers);
+
+        ResponseEntity<Person> response = restTemplate.exchange("/person", HttpMethod.POST, updateEntity, Person.class);
+        Assertions.assertNotNull(response.getBody().getId());
+        Assertions.assertEquals("Gusen", response.getBody().getLast_name());
+        Assertions.assertEquals("Nandom", response.getBody().getFirst_name());
+        Assertions.assertEquals("34", response.getBody().getAge());
+
     }
 
     @Test
     public void testDeletePerson() {
-        int id = 1;
-        Person person = restTemplate.getForObject("/person/" + id, Person.class);
-        Assertions.assertNotNull(person);
-        restTemplate.delete("/person/" + id);
-        try {
-            person = restTemplate.getForObject("/person/" + id, Person.class);
-        } catch (final HttpClientErrorException e) {
-            Assertions.assertEquals(e.getStatusCode(), HttpStatus.NOT_FOUND);
-        }
+
+        HttpEntity<Person> entity = new HttpEntity<>(null, headers);
+        ResponseEntity<Person> response = restTemplate.exchange("/person/1", HttpMethod.DELETE, entity, Person.class);
+        Assertions.assertEquals(200, response.getStatusCodeValue());
     }
 
 

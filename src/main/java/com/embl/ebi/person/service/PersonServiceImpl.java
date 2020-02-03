@@ -28,12 +28,12 @@ public class PersonServiceImpl implements PersonService{
     }
 
     @Override
-    public Optional<Person> findPersonById(long id) {
+    public Optional<Person> findPersonById(Long id) {
         return personRepository.findById(id);
     }
 
     @Override
-    public void deletePersonById(long id) {
+    public void deletePersonById(Long id) {
         personRepository.deleteById(id);
     }
 
