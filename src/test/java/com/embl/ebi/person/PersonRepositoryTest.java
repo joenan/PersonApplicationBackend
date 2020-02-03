@@ -1,7 +1,7 @@
 package com.embl.ebi.person;
 
 import com.embl.ebi.person.model.Person;
-import com.embl.ebi.person.service.PersonService;
+import com.embl.ebi.person.repository.PersonRepository;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -16,14 +16,14 @@ import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class PersonServiceTest {
+public class PersonRepositoryTest {
 
     @Autowired
-    private PersonService personService;
+    private PersonRepository personRepository;
 
 
     @Test
-    public void savePerson() {
+    public void testSavePerson() {
 
         Person person = new Person();
         person.setFirst_name("Stanley");
@@ -31,7 +31,7 @@ public class PersonServiceTest {
         person.setAge("45");
         person.setHobby(Arrays.asList("Dancing", "Music"));
 
-        Person savedPerson = personService.save(person);
+        Person savedPerson = personRepository.save(person);
 
         Assert.assertNotNull(savedPerson);
         Assertions.assertEquals(savedPerson.getFirst_name(), person.getFirst_name());
@@ -40,7 +40,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void getPersonById() {
+    public void testGetPersonById() {
 
         Person person = new Person();
         person.setFirst_name("Stanley");
@@ -48,9 +48,9 @@ public class PersonServiceTest {
         person.setAge("45");
         person.setHobby(Arrays.asList("Dancing", "Music"));
 
-        Person savedPerson = personService.save(person);
+        Person savedPerson = personRepository.save(person);
 
-        Optional<Person> personWithId = personService.findPersonById(savedPerson.getId());
+        Optional<Person> personWithId = personRepository.findById(savedPerson.getId());
         Assertions.assertNotNull(personWithId);
         Assertions.assertEquals(personWithId.get().getFirst_name(), person.getFirst_name());
     }
@@ -64,9 +64,9 @@ public class PersonServiceTest {
         person.setAge("45");
         person.setHobby(Arrays.asList("Dancing", "Music"));
 
-        Person savedPerson = personService.save(person);
+        Person savedPerson = personRepository.save(person);
 
-        List<Person> personList = personService.findAllPersons();
+        List<Person> personList = personRepository.findAll();
         Assertions.assertNotNull(personList);
     }
 
@@ -78,8 +78,9 @@ public class PersonServiceTest {
         person.setAge("45");
         person.setHobby(Arrays.asList("Dancing", "Music"));
 
-        Person savedPerson = personService.save(person);
-        personService.deletePersonById(person.getId());
+        Person savedPerson = personRepository.save(person);
+        personRepository.deleteById(person.getId());
     }
-
+    
+    
 }
