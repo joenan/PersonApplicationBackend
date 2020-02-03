@@ -23,34 +23,34 @@ public class PersonController {
     @PostMapping("/person")
     public ResponseEntity<?> savePerson(@RequestBody @Valid Person request) {
 
-        if(request !=null) {
-            Person savedObject = service.getPersonRepository().save(request);
-            return ResponseEntity.ok(savedObject);
-        }
+        if(request ==null) {
+            return ResponseEntity.badRequest().body("Request is empty");
 
-        return ResponseEntity.badRequest().body("Request is empty");
+        }
+        Person savedPersonObject = service.save(request);
+        return ResponseEntity.ok().body(savedPersonObject);
     }
 
     @ApiOperation(value = "Get List of Persons")
     @GetMapping("/person")
     public ResponseEntity<?> findAllPersons() {
-        List<Person> list = service.getPersonRepository().findAll();
+        List<Person> list = service.findAllPersons();
         return ResponseEntity.ok(list);
     }
 
     @ApiOperation(value = "Get Person by Id")
     @GetMapping("/person/{id}")
-    public ResponseEntity<?> findPersonsById(@PathVariable long id) {
-        return service.getPersonRepository().findById(id).map(record -> ResponseEntity.ok().body(record))
+    public ResponseEntity<Person> findPersonsById(@PathVariable long id) {
+        return service.findPersonById(id).map(record -> ResponseEntity.ok().body(record))
             .orElseThrow(() -> new PersonNotFoundException(id));
     }
 
     @ApiOperation(value = "Delete Person by Id")
     @DeleteMapping("/person/{id}")
     public ResponseEntity<?> deletePersonCode(@PathVariable("id") long id) {
-        return service.getPersonRepository().findById(id)
+        return service.findPersonById(id)
                 .map(record -> {
-                    service.getPersonRepository().deleteById(id);
+                    service.deletePersonById(id);
                     return ResponseEntity.ok().build();
                 }) .orElseThrow(() -> new PersonNotFoundException(id));
     }
@@ -58,13 +58,13 @@ public class PersonController {
     @ApiOperation(value = "Edit Person by ID")
     @PutMapping("/person/{id}")
     public ResponseEntity<?> updatePerson(@PathVariable("id") long id, @RequestBody Person data) {
-        return service.getPersonRepository().findById(id)
+        return service.findPersonById(id)
                 .map(record -> {
                     record.setAge(data.getAge());
                     record.setFirst_name(data.getFirst_name());
                     record.setHobby(data.getHobby());
                     record.setLast_name(data.getLast_name());
-                    Person updated = service.getPersonRepository().save(record);
+                    Person updated = service.save(record);
                     return ResponseEntity.ok().body(updated);
                 }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }

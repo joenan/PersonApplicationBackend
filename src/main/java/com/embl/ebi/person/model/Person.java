@@ -79,28 +79,23 @@ public class Person implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Person person = (Person) o;
-        return Objects.equals(id, person.id) &&
-                Objects.equals(first_name, person.first_name) &&
-                Objects.equals(last_name, person.last_name) &&
-                Objects.equals(age, person.age) &&
-                Objects.equals(hobby, person.hobby);
+
+        if (id != null ? !id.equals(person.id) : person.id != null) return false;
+        if (first_name != null ? !first_name.equals(person.first_name) : person.first_name != null) return false;
+        if (last_name != null ? !last_name.equals(person.last_name) : person.last_name != null) return false;
+        if (age != null ? !age.equals(person.age) : person.age != null) return false;
+        return hobby != null ? hobby.equals(person.hobby) : person.hobby == null;
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, first_name, last_name, age, hobby);
-    }
-
-    @Override
-    public String toString() {
-        return "Person{" +
-                "id=" + id +
-                ", first_name='" + first_name + '\'' +
-                ", last_name='" + last_name + '\'' +
-                ", age='" + age + '\'' +
-                ", hobby='" + hobby + '\'' +
-                '}';
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (first_name != null ? first_name.hashCode() : 0);
+        result = 31 * result + (last_name != null ? last_name.hashCode() : 0);
+        result = 31 * result + (age != null ? age.hashCode() : 0);
+        result = 31 * result + (hobby != null ? hobby.hashCode() : 0);
+        return result;
     }
 }
