@@ -1,5 +1,5 @@
 # person-backend-application
-SpringBoot Restful Web Service Person Application CRUD(Create, Read, Update and Delete)
+SpringBoot Restful Web Service Person Application CRUD(Create, Read, Update and Delete) using SpringBoot, Rest, Swagger Documentation, H2 database and an embedded Apache tomcat server.
 
 # API Documentation
 The Swagger API Documentation for this application can be accessed via https://www.stagingapp.live/person/swagger-ui.html
@@ -8,7 +8,7 @@ The Swagger API Documentation for this application can be accessed via https://w
 To Build this application on the command Line, Run the command "mvn install"
 
 # Run
-To run this application on the command Line, Run the command "mvn spring-boot:run" . The application can be accessed via http://localhost:8080/person
+To run this application on the command Line, Run the command "mvn spring-boot:run". The backend can be accessed via this context path on can be accessed via http://localhost:8080/person after  it has run.
 
 # Deploy
 To deploy this application in Tomcat Apache Server, copy the built application to tomcat/webapps directory. The app will be automatically deployed.
