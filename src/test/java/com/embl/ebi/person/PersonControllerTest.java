@@ -10,10 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -65,7 +67,7 @@ public class PersonControllerTest {
 
         Mockito.when(personService.save(any(Person.class))).thenReturn(p);
 
-        mockMvc.perform(post("/person")
+        mockMvc.perform(post("/api/v1/person")
                 .content(mapper.writeValueAsString(p))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -96,7 +98,7 @@ public class PersonControllerTest {
         Mockito.when(personService.findAllPersons()).thenReturn(list);
 
         // when + then
-        this.mockMvc.perform(get("/person"))
+        this.mockMvc.perform(get("/api/v1/person"))
                 .andExpect(jsonPath("$.[1].first_name", equalTo("John")))
                 .andExpect(jsonPath("$.[1].last_name", equalTo("Wesley")))
                 .andExpect(jsonPath("$.[1].age", equalTo("60")))
@@ -127,7 +129,7 @@ public class PersonControllerTest {
         Mockito.when(personService.findPersonById(anyLong())).thenReturn(Optional.ofNullable(p));
 
 
-        mockMvc.perform(get("/person/1"))
+        mockMvc.perform(get("/api/v1/person/1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.first_name").value(p.getFirst_name()))
@@ -147,7 +149,7 @@ public class PersonControllerTest {
 
         Mockito.when(personService.findPersonById(anyLong())).thenReturn(Optional.ofNullable(p));
 
-        mockMvc.perform(delete("/person/1"))
+        mockMvc.perform(delete("/api/v1/person/1"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -164,7 +166,7 @@ public class PersonControllerTest {
 
         Mockito.when(personService.findPersonById(anyLong())).thenReturn(Optional.ofNullable(p));
 
-        mockMvc.perform(delete("/person/1"))
+        mockMvc.perform(delete("/api/v1/person/1"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
