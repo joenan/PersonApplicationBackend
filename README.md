@@ -18,8 +18,11 @@ Run the command 'mvn test' on the terminal to run all test cases on the backend
 
 # Running Individual Test
 To run the PersonController Integration test, Run the command mvn -Dtest=PersonControllerIntegrationTest test
+
 To run the PersonController Unit test, Run the command mvn -Dtest=PersonControllerTest test
+
 To run the PersonRepository Unit test, Run the command mvn -Dtest=PersonRepositoryTest test
+
 To run the PersonService Unit test, Run the command mvn -Dtest=PersonServiceTest test
 
 
