@@ -1,6 +1,6 @@
 package com.embl.ebi.person.controller;
 
-import com.embl.ebi.person.exception.PersonNotFoundException;
+import com.embl.ebi.person.exception.RecordNotFoundException;
 import com.embl.ebi.person.model.Person;
 import com.embl.ebi.person.service.PersonService;
 import io.swagger.annotations.ApiOperation;
@@ -51,7 +51,7 @@ public class PersonController {
     public ResponseEntity<Person> findPersonsById(@PathVariable("id") Long id) {
         log.info("Getting Person {} with Id " +id);
         return service.findPersonById(id).map(record -> ResponseEntity.ok().body(record))
-            .orElseThrow(() -> new PersonNotFoundException("User Searched Not Found", id));
+            .orElseThrow(() -> new RecordNotFoundException("Searched User Not Found: "+ id));
     }
 
 
@@ -63,7 +63,7 @@ public class PersonController {
                 .map(record -> {
                     service.deletePersonById(id);
                     return ResponseEntity.ok().build();
-                }) .orElseThrow(() -> new PersonNotFoundException("User To Delete Not Found", id));
+                }) .orElseThrow(() -> new RecordNotFoundException("User To Delete Not Found: " +id));
     }
 
     @ApiOperation(value = "Edit Person by ID")
