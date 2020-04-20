@@ -1,5 +1,6 @@
 ## person-backend-application
 SpringBoot Restful Web Service Person Application CRUD(Create, Read, Update and Delete) using SpringBoot, Rest, Swagger Documentation, H2 database and an embedded Apache tomcat server.
+
 Note: Please note that the application.properties has a default profile configuration (spring.profiles.active=dev). This implies that the application-dev.properties file is the selected profile. you can however change it to prod (spring.profiles.active=prod). By doing so, the aplication-prod.properties file will be the default configuration.
 
 ## API Documentation
